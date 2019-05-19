@@ -1,7 +1,7 @@
 package main
 
 type SiteMap struct {
-	// Super simple, efficient way to represend a DAG
+	// Super simple, efficient way to represend a directed graph
 	smap map[string]StringSet
 	// Keep the track of root to avoid topological sort later on
 	root string

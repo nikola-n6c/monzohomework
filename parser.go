@@ -23,7 +23,6 @@ func (parser HTMLParser) ParseStreaming(data *[]byte, foundCh chan<- string) err
 		if n.Type == html.ElementNode && n.Data == "a" {
 			for _, attr := range n.Attr {
 				if attr.Key == "href" {
-					// This is how it's streaming
 					foundCh <- attr.Val
 					break
 				}
