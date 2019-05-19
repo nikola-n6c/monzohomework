@@ -16,3 +16,13 @@ func (ss StringSet) IsThere(k string) bool {
 	_, ok := ss[k]
 	return ok
 }
+
+func (ss StringSet) AsSlice() []string {
+	slice := make([]string, len(ss))
+	i := 0
+	for k, _ := range ss {
+		slice[i] = k
+		i++
+	}
+	return slice
+}

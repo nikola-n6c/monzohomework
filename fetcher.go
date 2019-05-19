@@ -36,12 +36,15 @@ func NewStayAtHostHTTPFetcher(host string, depth int) *StayAtHostHTTPFetcher {
 func (fetcher StayAtHostHTTPFetcher) ShouldGet(crawlUrl CrawlUrl) bool {
 	if crawlUrl.depth > fetcher.MaxDepth {
 		// Too deep
+		// log.Infof("Rejecting %s because it's too deep %d %d", crawlUrl.url.String(), crawlUrl.depth, fetcher.MaxDepth)
 		return false
 	}
 	if crawlUrl.parent != nil && crawlUrl.parent.url == crawlUrl.url {
 		// Self-anchor
+		// log.Infof("Rejecting %s because it's self anchor", crawlUrl.url.String())
 		return false
 	}
+	// log.Infof("Comparing %s %s", crawlUrl.url.Hostname(), fetcher.HostToStayAt)
 	return strings.HasSuffix(crawlUrl.url.Hostname(), fetcher.HostToStayAt)
 }
 

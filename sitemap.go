@@ -1,24 +1,42 @@
 package main
 
-// Super simple, efficient way to represend a DAG
-type SiteMap map[string]StringSet
+type SiteMap struct {
+	// Super simple, efficient way to represend a DAG
+	smap map[string]StringSet
+	// Keep the track of root to avoid topological sort later on
+	root string
+}
+
+func NewSiteMap(root string) *SiteMap {
+	return &SiteMap{
+		map[string]StringSet{},
+		root,
+	}
+}
 
 func (sm SiteMap) Add(from, to string) {
 	if from != "" {
 		// Add the "from" node to DAG if not there
-		if _, ok := sm[from]; !ok {
-			sm[from] = StringSet{}
+		if _, ok := sm.smap[from]; !ok {
+			sm.smap[from] = StringSet{}
 		}
 		// Add the actual link
-		sm[from].Add(to)
+		sm.smap[from].Add(to)
 	}
 
 	if to != "" {
 		// We're adding the "to" node to the DAG as well
-		if _, ok := sm[to]; !ok {
-			sm[to] = StringSet{}
+		if _, ok := sm.smap[to]; !ok {
+			sm.smap[to] = StringSet{}
 		}
 	}
+}
+
+func (sm SiteMap) Get(n string) StringSet {
+	if v, ok := sm.smap[n]; ok {
+		return v
+	}
+	return StringSet{}
 }
 
 func (sm SiteMap) AddCrawlUrl(crawlUrl CrawlUrl) {

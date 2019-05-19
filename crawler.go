@@ -67,7 +67,7 @@ func (c MHCrawler) parse(cuwb crawlUrlWithBody, results chan<- CrawlUrl, done ch
 				results <- CrawlUrl{
 					depth:  cuwb.url.depth + 1,
 					parent: cuwb.url,
-					url:    parsedUrl,
+					url:    cuwb.url.url.ResolveReference(parsedUrl),
 				}
 			}
 		}
@@ -80,7 +80,7 @@ func (c MHCrawler) parse(cuwb crawlUrlWithBody, results chan<- CrawlUrl, done ch
 }
 
 func (c MHCrawler) From(startUrl *url.URL) *SiteMap {
-	smap := SiteMap{}
+	smap := NewSiteMap(startUrl.String())
 
 	// Concurrency control for fetchers/parsers
 	// Channel capacity is arbitrary at this point
@@ -150,5 +150,5 @@ forever:
 	close(fetcherCompleted)
 	close(parserCompleted)
 
-	return &smap
+	return smap
 }
