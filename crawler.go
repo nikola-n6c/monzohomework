@@ -14,20 +14,20 @@ type MHCrawler struct {
 	visited StringSet
 }
 
-func (c MHCrawler) fetch(url CrawlUrl, result chan<- crawlUrlWithBody, done chan<- bool, errCh chan<- error) (isFetched bool) {
-	if _, ok := c.visited[url.url.String()]; ok {
-		// Already visited this URL
-		done <- true
-		return false
-	}
-	// Add to visited now to avoid computation in ShouldGet next time
-	c.visited.Add(url.url.String())
-
+func (c MHCrawler) fetch(url CrawlUrl, result chan<- crawlUrlWithBody, done chan<- bool, errCh chan<- error) bool {
 	if !c.fetcher.ShouldGet(url) {
 		// For whatever reason, fetcher decided we shouldn't GET this URL
 		done <- true
 		return false
 	}
+
+	if _, ok := c.visited[url.url.String()]; ok {
+		// Already visited this URL
+		done <- true
+		return true
+	}
+	// Add to visited now to avoid computation in ShouldGet next time
+	c.visited.Add(url.url.String())
 
 	// Start the actual fetching in another goroutine
 	go func() {
@@ -61,13 +61,13 @@ func (c MHCrawler) parse(cuwb crawlUrlWithBody, results chan<- CrawlUrl, done ch
 	// Goroutine for "stream" collection catching all the urls found by parser
 	go func() {
 		for foundUrl := range urlsWeFound {
-			// Only look at full valid urls for now
-			// maybe make this filtering more transparent and extensible?
+			// Maybe make this filtering more transparent and extensible?
 			if parsedUrl, err := url.Parse(foundUrl); err == nil {
 				results <- CrawlUrl{
 					depth:  cuwb.url.depth + 1,
 					parent: cuwb.url,
-					url:    cuwb.url.url.ResolveReference(parsedUrl),
+					// ResolveReference to support relative urls
+					url: cuwb.url.url.ResolveReference(parsedUrl),
 				}
 			}
 		}
@@ -116,7 +116,7 @@ forever:
 		select {
 		case url := <-urls:
 			fetchersStarted++
-			if fetched := c.fetch(url, pageBodies, fetcherCompleted, fetcherErrCh); fetched {
+			if valid := c.fetch(url, pageBodies, fetcherCompleted, fetcherErrCh); valid {
 				smap.AddCrawlUrl(url)
 			}
 		case pageBody := <-pageBodies:

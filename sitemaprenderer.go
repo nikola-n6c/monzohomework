@@ -17,7 +17,7 @@ type SiteMapRenderer interface {
 type JSONSiteMapRenderer struct{}
 
 func (r JSONSiteMapRenderer) Render(smap *SiteMap) (*bytes.Buffer, error) {
-	b, err := json.MarshalIndent(smap, "", "  ")
+	b, err := json.MarshalIndent(smap.smap, "", "  ")
 	if err != nil {
 		return nil, err
 	}
@@ -54,6 +54,7 @@ func (r SVGSiteMapRenderer) Render(smap *SiteMap) (*bytes.Buffer, error) {
 	delta := 2 * math.Pi / float64(pages)
 
 	q := make([]string, 0)
+	visited := StringSet{}
 	i := 0
 
 	q = append(q, smap.root)
@@ -62,6 +63,10 @@ func (r SVGSiteMapRenderer) Render(smap *SiteMap) (*bytes.Buffer, error) {
 	for len(q) > 0 {
 		node := q[0]
 		q = q[1:]
+		if visited.IsThere(node) {
+			continue
+		}
+		visited.Add(node)
 
 		angle := float64(i) * delta
 
@@ -88,9 +93,14 @@ func (r SVGSiteMapRenderer) Render(smap *SiteMap) (*bytes.Buffer, error) {
 
 	// Render lines using BFS
 	q = append(q, smap.root)
+	visited = StringSet{}
 	for len(q) > 0 {
 		node := q[0]
 		q = q[1:]
+		if visited.IsThere(node) {
+			continue
+		}
+		visited.Add(node)
 
 		for _, c := range smap.Get(node).AsSlice() {
 			canvas.Line(int(whereIsX[node]), int(whereIsY[node]), int(whereIsX[c]), int(whereIsY[c]), "stroke:black", `marker-end="url(#arrow)"`)

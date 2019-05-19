@@ -14,6 +14,11 @@ func NewSiteMap(root string) *SiteMap {
 	}
 }
 
+func (sm SiteMap) Has(crawlUrl CrawlUrl) bool {
+	_, ok := sm.smap[crawlUrl.url.String()]
+	return ok
+}
+
 func (sm SiteMap) Add(from, to string) {
 	if from != "" {
 		// Add the "from" node to DAG if not there
