@@ -34,7 +34,7 @@ func (dp DummyParser) ParseStreaming(data *[]byte, foundCh chan<- string) error 
 }
 
 func Test_From(t *testing.T) {
-	// Cycles included
+	// Cycles and self-refs included
 	truth := SiteMap{
 		smap: map[string]StringSet{
 			"/": map[string]struct{}{
