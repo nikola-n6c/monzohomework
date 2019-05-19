@@ -37,25 +37,26 @@ func Test_From(t *testing.T) {
 	// Cycles included
 	truth := SiteMap{
 		smap: map[string]StringSet{
-			"http://demo.com/": map[string]struct{}{
-				"http://demo.com/one": inset,
-				"http://demo.com/two": inset,
+			"/": map[string]struct{}{
+				"/one": inset,
+				"/two": inset,
 			},
-			"http://demo.com/one": map[string]struct{}{
-				"http://demo.com/":    inset,
-				"http://demo.com/two": inset,
+			"/one": map[string]struct{}{
+				"/":    inset,
+				"/two": inset,
 			},
-			"http://demo.com/two": map[string]struct{}{
-				"http://demo.com/": inset,
+			"/two": map[string]struct{}{
+				"/":    inset,
+				"/two": inset,
 			},
 		},
-		root: "http://demo.com/",
+		root: "/",
 	}
 	f := DummyFetcher{
 		response: map[string]string{
-			"http://demo.com/":    `/one,/two`,
-			"http://demo.com/one": `/,/two`,
-			"http://demo.com/two": `/`,
+			"/":    `/one,/two`,
+			"/one": `/,/two`,
+			"/two": `/,/two`,
 		},
 	}
 
@@ -67,7 +68,7 @@ func Test_From(t *testing.T) {
 		StringSet{},
 	}
 
-	url, _ := url.Parse("http://demo.com/")
+	url, _ := url.Parse("/")
 	sm := c.From(url)
 
 	if !reflect.DeepEqual(*sm, truth) {
