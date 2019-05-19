@@ -25,11 +25,9 @@ func (df DummyFetcher) Get(crawlUrl CrawlUrl) (*[]byte, error) {
 type DummyParser struct{}
 
 func (dp DummyParser) ParseStreaming(data *[]byte, foundCh chan<- string) error {
-	// go func() {
 	for _, s := range strings.Split(string(*data), ",") {
 		foundCh <- s
 	}
-	// }()
 	return nil
 }
 
