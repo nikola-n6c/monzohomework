@@ -6,7 +6,8 @@ _👋 Hi there! Only on rare ocassions would I put out this much code without an
 The entire program is made out of two high level pieces:
 1. Crawler - only constructs the Site map
 2. Site map renderer - takes the constructed Site map and renders it to a file
-##### Crawler
+
+### Crawler
 From the very beggining I tried to keep crawler performant and easily testable. Itself is constructed over two separate parts:
 1. Fetcher - fetches raw bytes from an url
 2. Parser - parses raw bytes and streams interesting pieces to a channel
