@@ -2,6 +2,10 @@
 
 _👋 Hi there! Only on rare ocassions would I put out this much code without any documentation or writeup on what/how/why, and I felt like I should do the same for this assignment. I hope it'll give you more insight into my work on this one. Thanks! 🙏_
 
+## How to
+This thing is built on Go Modules. Don't forget to `go mod download` before `go build`.
+Run with `-h` to check out all the options.
+
 ## Design
 The entire program is made out of two high level pieces:
 1. Crawler - only constructs the Site map
