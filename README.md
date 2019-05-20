@@ -1,8 +1,8 @@
-## Monzo homework - Web crawler
+# Monzo homework - Web crawler
 
 _👋 Hi there! Only on rare ocassions would I put out this much code without any documentation or writeup on what/how/why, and I felt like I should do the same for this assignment. I hope it'll give you more insight into my work on this one. Thanks! 🙏_
 
-#### Design
+## Design
 The entire program is made out of two high level pieces:
 1. Crawler - only constructs the Site map
 2. Site map renderer - takes the constructed Site map and renders it to a file
@@ -31,7 +31,7 @@ The core Crawler itself is somewhat inspired by event driven web servers. There'
 
 This keeps repeating until there are no more urls to fetch and bytes to parse. Good thing to notice is that at any given time, we could have many Fetchers and many Parsers running. 
 The output of this process is a SiteMap object (simple representation of directed graph with added utility functionalities).
-##### Renderer
+### Renderer
 Renderer is a super simple interface that takes in a SiteMap and spills out raw bytes into a file. It's meant to provide an extensible way to support different output formats.
 I managed to provide two very basic renderers:
 1. JSON renderer - useful for passing between programs (e.g. can be served with a nice frontend)
@@ -39,22 +39,22 @@ I managed to provide two very basic renderers:
 
 I've provided some SVG results in the repo itself, so you can check those out (2k x 2k px).
 
-###### Other entities in the code
+#### Other entities in the code
 * StringSet - simple _set of strings_ implementation
 * SiteMap - data structure that keeps track of directed (cyclic) graph
 * interfaces.go - the high level interfaces we mentioned earlier
 
-#### Alternative designs considered
+## Alternative designs considered
 My initial idea was to make everything _streaming_. That would include incremental rendering of the SiteMap object, but I drifted away from that since it would complicate the event loop without useful benefits.
 I first started with Fetcher and Parser combined, but quickly moved away because it was not really following the _separations of concernes_ and it was by definition more confusing to test.
 
-#### Improvements
+## Improvements
 If I had more time, I would:
 * Invest heaviliy into testing the Crawler event loop more thoroughly. 
 * Do a better job at following Golang best practices (I'm still very new to the language)
 * Implement a frontend to render SiteMap in a more useful fashion
 
-#### Thanks
+## Thanks
 
 Thank you so much for taking the time to read this doc and the code. Have a lovely day! 🙏
 
